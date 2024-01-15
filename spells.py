@@ -1,4 +1,4 @@
-from random import random
+import random
 from Levenshtein import distance
 
 SPELL_TYPE_USELESS      = 0
@@ -26,8 +26,7 @@ class Spell:
     #Class special methods
     """
         name        (str)   Name of the spell as used in combat
-        speed       (int)   Speed of the spell. This will determine what spell hits who in a single move. The spell of the wizard with the lowest spell speed won't hit the player.
-                            If spells have the same speed, both will be executed        
+        speed       (int)   Speed of the spell. This will determine what spell is casted first.
         damage      (int)   Damage that the spell does. 
                             <!> Negative damage takes away moves from opponent (eg -2 = cancel 2 moves of opponent)
         succes_rate (int)   How much chance for the spell to be succesfully cast. If it fails, spell won't be cast (thus spells with a succes_rate of 0 would never be executed, and 100=always succes)
@@ -75,7 +74,7 @@ spell_protego           =   Spell("Protego",            100, 000,  95,  "Create 
 
 # Common combat spells. High chance of succes, deals some damage
 spell_reducto           =   Spell("Reduto",              75, 150,  75,  "Blast an object near your opponent")
-spell_rictusempra       =   Spell("Rictusempra",         85,  90,  90,  "Causes your opponent to curl up in laughter, making them tired")
+spell_rictusempra       =   Spell("Rictusempra",         85,  90,  90,  "Causes your opponent to curl up in laughter, tiring them out")
 spell_stupefy           =   Spell("Stupefy",             95,  75,  95,  "Knock over your opponent")
 
 # Powerful combat spells. Medium chance of succes, deals more damage or stuns opponents
@@ -86,16 +85,19 @@ spell_sectusempra       =   Spell("Sectusempra",         90, 400,  40,  "Slices 
 spell_silencio          =   Spell("Silencio",            35,  -3,  20,  "Silences your opponent, causing them unable to cast spells for 3 moves", SPELL_TYPE_POWERFUL)
 
 # Unforgivable spells. Very low chance of success, instantly kills or deals alot of damage/stun amount
-spell_avada_kedavra     =   Spell("Avada Kedavra",      100, 9999,  2,  "Instantly end your opponent", SPELL_TYPE_UNFORGIVABLE)
+spell_avada_kedavra     =   Spell("Avada Kedavra",      100, 999,  2,  "Instantly end your opponent", SPELL_TYPE_UNFORGIVABLE)
 spell_crucio            =   Spell("Crucio",             100, 500,   5,  "Cause excruciating pain to your opponent, causing alot of damage and making them unable to cast spells for 5 moves", SPELL_TYPE_UNFORGIVABLE)
 spell_imperio           =   Spell("Imperio",            100,  -1,   3,  "Muddle with your opponent's mind, convincing them to stop casting spells for 10 moves", SPELL_TYPE_UNFORGIVABLE)
 
-# spell_none, used as a fallback if an invalid spell was cast ('no object'.method/attribute)
+# spell_none, used as a fallback if an invalid spell was casted
 spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_USELESS)
 
 ##
 ## Standalone spell functions
 ##
+def random_combat_spell():
+    return random.choice([i for i in Spell.spellList if i.type == SPELL_TYPE_COMMON])
+
 def find_spell_by_name(input: str): # Returns a list with: [spell_object, levenshtein_distance]. If distance is greater than 0 (typos were made), damage goes down
     for i in Spell.spellList:
         if input.title() == i.name.title():

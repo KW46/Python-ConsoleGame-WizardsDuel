@@ -17,7 +17,7 @@ def print_turn_message(player: Player):
     return random.choice(input_messages).format(name=player.name)
 
 current_round = 1
-def round_end(player1: Player, player2: Player):
+def round_end():
     if (player1.stunned_rounds > 0): player1.stunned_rounds -= 1
     if (player2.stunned_rounds > 0): player2.stunned_rounds -= 1
 
@@ -53,3 +53,73 @@ while True:
 print("Welcome {p1_name} and {p2_name}! You're about to choose a wand to use in this duel! Available wands are:".format(p1_name=player1_name, p2_name=player2_name))
 for i in Wand.wandList:
     print(i)
+
+#Player 1
+while (True):
+    try:
+        wand_input = int(input("What wand do you want {name}? (Enter one of the numbers): ".format(name=player1_name)))
+    except ValueError:
+        continue
+    if wand_input < 1 or wand_input > len(Wand.wandList):
+        continue
+
+    player1_wand = Wand.wandList[wand_input-1]
+    break
+#Player 2
+while (True):
+    try:
+        wand_input = int(input("What wand do you want {name}? (Enter one of the numbers): ".format(name=player2_name)))
+    except ValueError:
+        continue
+    if wand_input < 1 or wand_input > len(Wand.wandList):
+        continue
+
+    player2_wand = Wand.wandList[wand_input-1]
+    break
+
+player1 = Player(player1_name, player1_wand)
+player2 = Player(player2_name, player2_wand)
+
+print()
+print("{name} will be fighting with an {wood} wand with a {core} core".format(name=player1.name, wood=player1.wand.get_wand_wood().lower(), core=player1.wand.get_wand_core().lower()))
+print("{name} will be fighting with an {wood} wand with a {core} core".format(name=player2.name, wood=player2.wand.get_wand_wood().lower(), core=player2.wand.get_wand_core().lower()))
+print("<!> If you need a list of available spells, enter: help (this will not take away a move)")
+print("<!> If you need information of a specific spell, enter: help SPELL_NAME")
+print("<!> You can press enter (without typing a spell) to cast a random basic combat spell")
+print()
+print("Alright! Time to duel!")
+
+game_running = True
+try:
+    while (game_running):
+        current_round += 1
+        if (current_round != 1):
+            # Weird, right? To have round_end() at the start of a round.
+            # There will be multiple conditions where the current iteration will end.
+            # I'm lazy, hence why it's here :-)
+            round_end() 
+        
+        print("== Round {round} ==".format(round=current_round))
+        
+        # INPUT: Player 1
+
+        # INPUT: Player 2
+
+        # OUTCOME: SPELLS
+        #   > Get spell succes
+        #   > Add health if defensive spell was lucky (partial heal, fully heal)
+        #   > Determine instant winner or skip to next round
+        #   > Determine fastest spell
+        #       <!> Spells with speed 100 will always be casted
+        #   > Determine priority
+        #       1. Unforgivables
+        #       2. Protego 
+        #       3. (fastest_spell)
+        #       4. (other_player)
+        
+        # CAST SPELLS
+        #   >
+
+except KeyboardInterrupt:
+    print()
+    print("<!> Duel ended because both {} and {} suddenly decided to test out their apparition skill!".format(player1.name, player2.name))
