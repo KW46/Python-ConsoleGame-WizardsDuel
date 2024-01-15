@@ -92,7 +92,7 @@ spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_T
 ##
 ## Standalone spell functions
 ##
-def find_spell_by_name(input):
+def find_spell_by_name(input: str):
     for i in Spell.spellList:
         if input.title() == i.name.title():
             return i
