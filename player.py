@@ -30,6 +30,21 @@ class Player:
     def get_spell_succes_rate(self, spell: Spell):
         return 1 * self.wand.succes_rate * spell.succes_rate
     
+    def get_queued_effects(self):
+        output = ""
+        effect_slowed = "Slowed"
+        effect_blinded = "Blinded"
+
+        if (self.decreased_spell_speed):
+            output = effect_slowed
+        if (self.decreased_spell_damage):
+            if not output:
+                output = effect_blinded
+            else: output += ", " + effect_blinded
+        
+        if not output: output = "None"
+        return output
+
     def cast_spell_result(self, spell: Spell, succes: bool):
         if (succes):
             message = "{name} casted '{spell}' with succes"
