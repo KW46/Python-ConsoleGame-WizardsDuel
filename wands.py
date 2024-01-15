@@ -8,6 +8,7 @@ WAND_WOOD_APPLE     = 2 #Damage -5%
 
 class Wand:
     _next_wand_id = 1
+    wandList = []
 
     def __init__(self, wand_core: int, wand_wood: int):
         self.id = Wand._next_wand_id
@@ -33,13 +34,13 @@ class Wand:
         elif self.wood == WAND_WOOD_APPLE:
             self.damage *= 0.95
 
+        Wand.wandList.append(self)
         Wand._next_wand_id += 1
 
     def __repr__(self):
-        succes_rate = round(self.succes_rate * 100, 3)
-        speed = round(self.speed * 100, 3)
-        damage = round(self.dmg * 100, 3)
-        return "Modifiers: SUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(srate=succes_rate, speed=speed, dmg=damage)
+        return"\t{id}: {wood} wand with core: {core}\n\t\t-- SPEED: {info_speed}\tDAMAGE: {info_dmg}\tSUCCES RATE: {info_srate}".format(
+            id=self.id, wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=self.damage
+        )
     
     def get_wand_core(self):
         if self.core == WAND_CORE_UNICORN: return "Unicorn hair"
