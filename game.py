@@ -1,5 +1,4 @@
 from player import *
-from spells import *
 from wands import *
 
 ##
@@ -155,10 +154,10 @@ try:
         if not player1.active_spell_succes and not player2.active_spell_succes:
             continue
         if not player1.active_spell_succes and player2.active_spell_succes:
-            player2.cast_spell(player2.active_spell, player1)
+            player2.cast_spell(player1)
             continue
         elif player1.active_spell_succes and not player2.active_spell_succes:
-            player1.cast_spell(player1.active_spell, player2)
+            player1.cast_spell(player2)
             continue
 
         #   > Determine fastest spell
@@ -187,8 +186,21 @@ try:
         ))
         
         # CAST SPELLS
-        fastest_caster.cast_spell(fastest_caster.active_spell, slowest_caster)
-        slowest_caster.cast_spell(slowest_caster.active_spell, fastest_caster)
+        fastest_caster.cast_spell(slowest_caster)
+        if slowest_caster.health > 0:
+            slowest_caster.cast_spell(fastest_caster)
+
+        fastest_caster.active_spell = spell_none
+        fastest_caster.active_spell_levenshtein_distance = 0
+        slowest_caster.active_spell = spell_none
+        slowest_caster.active_spell_levenshtein_distance = 0
+
+        if player1.health == 0:
+            print("END! {name} has been defeated. Congratulations {name2}!".format(name=player1.name, name2=player2.name))
+            game_running = False
+        elif player2.health == 0:
+            print("END! {name} has been defeated. Congratulations {name2}!".format(name=player2.name, name2=player1.name))
+            game_running = False
 
 except KeyboardInterrupt:
     print()
