@@ -30,6 +30,28 @@ def round_end():
           )
     )
 
+def get_player_spell_from_input():
+    while True:
+        player_input = input(print_turn_message(player1))
+
+        if not player_input:
+            return [random_combat_spell(), 0]
+        else:
+            if player_input == "help":
+                print_spells()
+                continue
+            elif player_input.find("help", 0) != -1:
+                find_what = player_input[5:]
+                spell = find_spell_by_name(find_what)
+
+                if spell == spell_none:
+                    print("<!> Spell '{what}' does not exist!".format(what=find_what))
+                else:
+                    print(spell)
+                continue
+            else:
+                return find_spell_by_name(player_input)
+
 ##
 ## ENTRY
 ##
@@ -100,10 +122,8 @@ try:
             round_end() 
         
         print("== Round {round} ==".format(round=current_round))
-        
-        # INPUT: Player 1
-
-        # INPUT: Player 2
+        player1_spell = get_player_spell_from_input()
+        player2_spell = get_player_spell_from_input()
 
         # OUTCOME: SPELLS
         #   > Get spell succes
