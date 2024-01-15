@@ -73,7 +73,7 @@ spell_lumos_solem       =   Spell("Lumos Solem",        100, 000,  60,  "Blinds 
 spell_protego           =   Spell("Protego",            100, 000,  95,  "Create a shield that blocks most attacks", SPELL_TYPE_DEFENSE)
 
 # Common combat spells. High chance of succes, deals some damage
-spell_reducto           =   Spell("Reduto",              75, 150,  75,  "Blast an object near your opponent")
+spell_reducto           =   Spell("Reducto",              75, 150,  75,  "Blast an object near your opponent")
 spell_rictusempra       =   Spell("Rictusempra",         85,  90,  90,  "Causes your opponent to curl up in laughter, tiring them out")
 spell_stupefy           =   Spell("Stupefy",             95,  75,  95,  "Knock over your opponent")
 

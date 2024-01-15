@@ -16,7 +16,7 @@ input_messages = (
 def print_turn_message(player: Player):
     return random.choice(input_messages).format(name=player.name)
 
-current_round = 1
+current_round = 0
 def round_end():
     if (player1.stunned_rounds > 0): player1.stunned_rounds -= 1
     if (player2.stunned_rounds > 0): player2.stunned_rounds -= 1
@@ -30,9 +30,9 @@ def round_end():
           )
     )
 
-def get_player_spell_from_input():
+def get_player_spell_from_input(player: Player):
     while True:
-        player_input = input(print_turn_message(player1))
+        player_input = input(print_turn_message(player))
 
         if not player_input:
             return [random_combat_spell(), 0]
@@ -122,13 +122,42 @@ try:
             round_end() 
         
         print("== Round {round} ==".format(round=current_round))
-        player1_spell = get_player_spell_from_input()
-        player2_spell = get_player_spell_from_input()
+        player1_spell, player1_spell_levenshtein_distance = get_player_spell_from_input(player1)
+        player2_spell, player2_spell_levenshtein_distance = get_player_spell_from_input(player2)
 
         # OUTCOME: SPELLS
         #   > Get spell succes
+        player1_spell_succes = player1.get_spell_succes_rate(player1_spell) > random.random() * 100
+        player2_spell_succes = player2.get_spell_succes_rate(player2_spell) > random.random() * 100
+
+        print(player1.cast_spell_result(player1_spell, player1_spell_succes))
+        print(player2.cast_spell_result(player2_spell, player2_spell_succes))
+
         #   > Add health if defensive spell was lucky (partial heal, fully heal)
+        if player1_spell_succes and player1_spell.chance_heal_partly_succes():
+            player1.give_health(MAX_PLAYER_HEALTH * 0.05)
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player1.name, spell=player1_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+        elif player1_spell_succes and player1_spell.chance_heal_fully_succes() and player1.health < MAX_PLAYER_HEALTH:
+            player1.give_health(MAX_PLAYER_HEALTH)
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player1.name, spell=player1_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+        #
+        if player2_spell_succes and player2_spell.chance_heal_partly_succes():
+            player2.give_health(MAX_PLAYER_HEALTH * 0.05)
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player2.name, spell=player2_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+        elif player2_spell_succes and player2_spell.chance_heal_fully_succes() and player2.health < MAX_PLAYER_HEALTH:
+            player2.give_health(MAX_PLAYER_HEALTH)
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2_spell.name, hp=MAX_PLAYER_HEALTH*0.05))            
+
         #   > Determine instant winner or skip to next round
+        if not player1_spell_succes and not player2_spell_succes:
+            continue
+        if not player1_spell_succes and player2_spell_succes:
+            player2.cast_spell(player2_spell, player1)
+            pass
+        elif player1_spell_succes and not player2_spell_succes:
+            player1.cast_spell(player1_spell, player2)
+            pass
+
         #   > Determine fastest spell
         #       <!> Spells with speed 100 will always be casted
         #   > Determine priority

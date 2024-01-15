@@ -55,3 +55,8 @@ class Player:
                 return "{name} must not be feeling well, since they casted a non existing spell. Cast FAILED!".format(name=self.name)
             else: message = "{name} tried to cast '{spell}' but mispronounced it. Cast FAILED!"
         return message.format(name=self.name, spell=spell.name)
+    
+    def cast_spell(self, spell: Spell, opponent): #: Player ?
+        # Below is pretty much a placeholder and will be implemented after placing all cast_spell()s in game.py
+        print("> {} hits {} and does {} damage!".format(self.name, opponent.name, spell.damage))
+        opponent.health -= spell.damage
