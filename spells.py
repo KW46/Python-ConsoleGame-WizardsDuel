@@ -1,4 +1,5 @@
 from random import random
+from Levenshtein import distance
 
 SPELL_TYPE_USELESS      = 0
 SPELL_TYPE_DEFENSE      = 1
