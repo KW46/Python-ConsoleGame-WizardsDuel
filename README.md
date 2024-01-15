@@ -1,2 +1,6 @@
-Simple console game written in Python.
-Based the on Harry Potter franchise
+Simple console game written in Python.<br>
+Based the on Harry Potter franchise.
+
+
+You can run the game via pipenv. If you don't, make sure package levenshtein is installed.<br>
+Run `game.py` to run the game
