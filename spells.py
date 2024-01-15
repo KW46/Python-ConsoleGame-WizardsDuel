@@ -87,3 +87,35 @@ spell_imperio           =   Spell("Imperio",            100,  -1,   3,  "Muddle 
 
 # spell_none, used as a fallback if an invalid spell was cast ('no object'.method/attribute)
 spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_USELESS)
+
+##
+## Standalone spell functions
+##
+def print_spells():
+    header_spells_useless = "== USELESS SPELLS =="
+    header_spells_defensive = "== DEFENSIVE SPELLS =="
+    header_spells_common = "== COMMON COMBAT SPELLS =="
+    header_spells_powerful = "== POWERFUL COMBAT SPELLS =="
+    header_spells_unforgivable = "== UNFORGIVABLE CURSES =="
+
+    for i in Spell.spellList:
+        if i.type == SPELL_TYPE_UNFORGIVABLE or i.type == SPELL_TYPE_USELESS:
+            continue
+        
+        if i.type == SPELL_TYPE_USELESS and header_spells_useless:
+            print("\n"+header_spells_useless)
+            header_spells_useless = ""
+        elif i.type == SPELL_TYPE_DEFENSE and header_spells_defensive:
+            print("\n"+header_spells_defensive)
+            header_spells_defensive = ""
+        elif i.type == SPELL_TYPE_COMMON and header_spells_common:
+            print("\n"+header_spells_common)
+            header_spells_common = ""
+        elif i.type == SPELL_TYPE_POWERFUL and header_spells_powerful:
+            print("\n"+header_spells_powerful)
+            header_spells_powerful = ""
+        elif i.type == SPELL_TYPE_UNFORGIVABLE and header_spells_unforgivable:
+            print("\n"+header_spells_unforgivable)
+            header_spells_unforgivable = ""
+
+        print(i)
