@@ -122,73 +122,73 @@ try:
             round_end() 
         
         print("== Round {round} ==".format(round=current_round))
-        player1_spell, player1_spell_levenshtein_distance = get_player_spell_from_input(player1)
-        player2_spell, player2_spell_levenshtein_distance = get_player_spell_from_input(player2)
+        player1.active_spell, player1.active_spell_levenshtein_distance = get_player_spell_from_input(player1)
+        player2.active_spell, player2.active_spell_levenshtein_distance = get_player_spell_from_input(player2)
+
+        player1.active_spell = player1.active_spell
+        player2.active_spell = player2.active_spell
 
         # OUTCOME: SPELLS
         #   > Get spell succes
-        player1_spell_succes = player1.get_spell_succes_rate(player1_spell) > random.random() * 100
-        player2_spell_succes = player2.get_spell_succes_rate(player2_spell) > random.random() * 100
+        player1.active_spell_succes = player1.get_spell_succes_rate(player1.active_spell) > random.random() * 100
+        player2.active_spell_succes = player2.get_spell_succes_rate(player2.active_spell) > random.random() * 100
 
-        print(player1.cast_spell_result(player1_spell, player1_spell_succes))
-        print(player2.cast_spell_result(player2_spell, player2_spell_succes))
+        print(player1.cast_spell_result(player1.active_spell, player1.active_spell_succes))
+        print(player2.cast_spell_result(player2.active_spell, player2.active_spell_succes))
 
         #   > Add health if defensive spell was lucky (partial heal, fully heal)
-        if player1_spell_succes and player1_spell.chance_heal_partly_succes():
+        if player1.active_spell_succes and player1.active_spell.chance_heal_partly_succes():
             player1.give_health(MAX_PLAYER_HEALTH * 0.05)
-            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player1.name, spell=player1_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
-        elif player1_spell_succes and player1_spell.chance_heal_fully_succes() and player1.health < MAX_PLAYER_HEALTH:
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player1.name, spell=player1.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+        elif player1.active_spell_succes and player1.active_spell.chance_heal_fully_succes() and player1.health < MAX_PLAYER_HEALTH:
             player1.give_health(MAX_PLAYER_HEALTH)
-            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player1.name, spell=player1_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player1.name, spell=player1.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
         #
-        if player2_spell_succes and player2_spell.chance_heal_partly_succes():
+        if player2.active_spell_succes and player2.active_spell.chance_heal_partly_succes():
             player2.give_health(MAX_PLAYER_HEALTH * 0.05)
-            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player2.name, spell=player2_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
-        elif player2_spell_succes and player2_spell.chance_heal_fully_succes() and player2.health < MAX_PLAYER_HEALTH:
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player2.name, spell=player2.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+        elif player2.active_spell_succes and player2.active_spell.chance_heal_fully_succes() and player2.health < MAX_PLAYER_HEALTH:
             player2.give_health(MAX_PLAYER_HEALTH)
-            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2_spell.name, hp=MAX_PLAYER_HEALTH*0.05))            
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))            
 
         #   > Determine instant winner or skip to next round
-        if not player1_spell_succes and not player2_spell_succes:
+        if not player1.active_spell_succes and not player2.active_spell_succes:
             continue
-        if not player1_spell_succes and player2_spell_succes:
-            player2.cast_spell(player2_spell, player1)
+        if not player1.active_spell_succes and player2.active_spell_succes:
+            player2.cast_spell(player2.active_spell, player1)
             continue
-        elif player1_spell_succes and not player2_spell_succes:
-            player1.cast_spell(player1_spell, player2)
+        elif player1.active_spell_succes and not player2.active_spell_succes:
+            player1.cast_spell(player1.active_spell, player2)
             continue
 
         #   > Determine fastest spell
-        player1_spell_speed = player1_spell.speed * player1.wand.speed
-        player2_spell_speed = player2_spell.speed * player2.wand.speed
+        player1.active_spell_speed = player1.active_spell.speed * player1.wand.speed
+        player2.active_spell_speed = player2.active_spell.speed * player2.wand.speed
         
-        if player1.decreased_spell_speed and (player1_spell.type == SPELL_TYPE_COMMON or player1_spell.type == SPELL_TYPE_POWERFUL):
+        if player1.decreased_spell_speed and (player1.active_spell.type == SPELL_TYPE_COMMON or player1.active_spell.type == SPELL_TYPE_POWERFUL):
             print("<!> {name} is slowed, spell speed decreased by 33%!".format(name=player1.name))
-            player1_spell_speed *= 0.67
+            player1.active_spell_speed *= 0.67
             player1.decreased_spell_speed = False
-        if player2.decreased_spell_speed and (player2_spell.type == SPELL_TYPE_COMMON or player2_spell.type == SPELL_TYPE_POWERFUL):
+        if player2.decreased_spell_speed and (player2.active_spell.type == SPELL_TYPE_COMMON or player2.active_spell.type == SPELL_TYPE_POWERFUL):
             print("<!> {name} is slowed, spell speed decreased by 33%!".format(name=player2.name))
-            player2_spell_speed *= 0.67
+            player2.active_spell_speed *= 0.67
             player2.decreased_spell_speed = False
 
         fastest_caster = player1
-        if player2_spell_speed > player1_spell_speed:
+        slowest_caster = player2
+        if player2.active_spell_speed > player1.active_spell_speed:
             fastest_caster = player2
+            slowest_caster = player1
 
         print("- {p1_name}'s spell speed is {p1_spd}. {p2_name}'s spell speed is {p2_spd}. {fastest} is the fastest caster this round!".format(
-            p1_name=player1.name, p1_spd=player1_spell_speed,
-            p2_name=player2.name, p2_spd=player2_spell_speed,
+            p1_name=player1.name, p1_spd=player1.active_spell_speed,
+            p2_name=player2.name, p2_spd=player2.active_spell_speed,
             fastest=fastest_caster.name
         ))
-
-        #   > Determine priority
-        #       1. Unforgivables
-        #       2. Protego 
-        #       3. (fastest_spell)
-        #       4. (other_player)
         
         # CAST SPELLS
-        #   >
+        fastest_caster.cast_spell(fastest_caster.active_spell, slowest_caster)
+        slowest_caster.cast_spell(slowest_caster.active_spell, fastest_caster)
 
 except KeyboardInterrupt:
     print()

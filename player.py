@@ -1,5 +1,5 @@
 from wands import Wand
-from spells import Spell, SPELL_TYPE_USELESS, SPELL_TYPE_UNFORGIVABLE
+from spells import Spell, SPELL_TYPE_USELESS, SPELL_TYPE_UNFORGIVABLE, spell_none
 
 MAX_PLAYER_HEALTH = 500
 
@@ -8,6 +8,7 @@ class Player:
         self.name = name
         self.health = MAX_PLAYER_HEALTH
         self.wand = wand
+        self.active_spell = spell_none
 
         self.stunned_rounds = 0
         self.decreased_spell_speed = False

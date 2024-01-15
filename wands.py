@@ -25,7 +25,7 @@ class Wand:
         elif self.core == WAND_CORE_PHOENIX:
             self.speed *= 1.04
         elif self.core == WAND_CORE_DRAGON:
-            self.speed *= 1.05
+            self.damage *= 1.05
 
         if self.wood == WAND_WOOD_ASH:
             self.succes_rate *= 0.97
