@@ -1,7 +1,7 @@
 from wands import Wand
 from spells import *
 
-MAX_PLAYER_HEALTH = 500
+MAX_PLAYER_HEALTH = 1000
 
 class Player:
     def __init__(self, name: str, wand: Wand):
