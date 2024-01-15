@@ -153,13 +153,34 @@ try:
             continue
         if not player1_spell_succes and player2_spell_succes:
             player2.cast_spell(player2_spell, player1)
-            pass
+            continue
         elif player1_spell_succes and not player2_spell_succes:
             player1.cast_spell(player1_spell, player2)
-            pass
+            continue
 
         #   > Determine fastest spell
-        #       <!> Spells with speed 100 will always be casted
+        player1_spell_speed = player1_spell.speed * player1.wand.speed
+        player2_spell_speed = player2_spell.speed * player2.wand.speed
+        
+        if player1.decreased_spell_speed and (player1_spell.type == SPELL_TYPE_COMMON or player1_spell.type == SPELL_TYPE_POWERFUL):
+            print("<!> {name} is slowed, spell speed decreased by 33%!".format(name=player1.name))
+            player1_spell_speed *= 0.67
+            player1.decreased_spell_speed = False
+        if player2.decreased_spell_speed and (player2_spell.type == SPELL_TYPE_COMMON or player2_spell.type == SPELL_TYPE_POWERFUL):
+            print("<!> {name} is slowed, spell speed decreased by 33%!".format(name=player2.name))
+            player2_spell_speed *= 0.67
+            player2.decreased_spell_speed = False
+
+        fastest_caster = player1
+        if player2_spell_speed > player1_spell_speed:
+            fastest_caster = player2
+
+        print("- {p1_name}'s spell speed is {p1_spd}. {p2_name}'s spell speed is {p2_spd}. {fastest} is the fastest caster this round!".format(
+            p1_name=player1.name, p1_spd=player1_spell_speed,
+            p2_name=player2.name, p2_spd=player2_spell_speed,
+            fastest=fastest_caster.name
+        ))
+
         #   > Determine priority
         #       1. Unforgivables
         #       2. Protego 
