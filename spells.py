@@ -91,6 +91,12 @@ spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_T
 ##
 ## Standalone spell functions
 ##
+def find_spell_by_name(input):
+    for i in Spell.spellList:
+        if input.title() == i.name.title():
+            return i
+    return spell_none
+
 def print_spells():
     header_spells_useless = "== USELESS SPELLS =="
     header_spells_defensive = "== DEFENSIVE SPELLS =="
