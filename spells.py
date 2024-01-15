@@ -11,6 +11,10 @@ SPELL_TYPE_UNFORGIVABLE = 4
 CHANCE_HEAL_PARTLY      = 25
 CHANCE_HEAL_FULLY       = 5
 
+#Maximum Levenshtein distance. Eg if a user casts 'Pritrgo' instead of 'Protego', distance would be 2 and Protego would still be cast if MAX_LEVENSHTEIN_DISTANCE is at least 2
+#Set to 0 to disable
+MAX_LEVENSHTEIN_DISTANCE = 3
+
 __INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
 
 ##
@@ -92,11 +96,16 @@ spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_T
 ##
 ## Standalone spell functions
 ##
-def find_spell_by_name(input: str):
+def find_spell_by_name(input: str): # Returns a list with: [spell_object, levenshtein_distance]. If distance is greater than 0 (typos were made), damage goes down
     for i in Spell.spellList:
         if input.title() == i.name.title():
-            return i
-    return spell_none
+            return [i, 0]
+        else:
+            if MAX_LEVENSHTEIN_DISTANCE > 0:
+                dist = distance(i.name.title(), input.title())
+                if dist < MAX_LEVENSHTEIN_DISTANCE:
+                    return [i, dist]
+    return [spell_none, 0]
 
 def print_spells():
     header_spells_useless = "== USELESS SPELLS =="
