@@ -134,10 +134,10 @@ class Player:
                 opponent.health = 0
             elif self.active_spell == spell_crucio:
                 print("- THE NERVE! {name} casts the torture curse. {name_o} is greatly hurt and falls to the ground. They are stunned for 5 (more) moves".format(name=self.name, name_o=opponent.name))
-                opponent.stunned_rounts += 5
+                opponent.stunned_rounds += 5
             elif self.active_spell == spell_imperio:
                 print("- THE NERVE! {name} casts the Imperius curse. \"Why don't you take a nice nap for 10 moves, {name_o}?\". {name_o} submits with pleasure".format(name=self.name, name_o=opponent.name))
-                opponent.stunned_rounts = 10
+                opponent.stunned_rounds = 10
 
         else:
             if self.active_spell == spell_mimblewimble:
@@ -147,9 +147,9 @@ class Player:
                     print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))
             elif self.active_spell == spell_silencio:
                 if opponent.active_spell != spell_protego:
-                    if opponent.stunned_rounts == 0:
+                    if opponent.stunned_rounds == 0:
                         print("- {name} casts {spell} on {name_o}. SUCCES! {name_o} is silenced for 3 (more) moves".format(name=self.name, spell=spell_name, name_o=opponent.name))
-                        opponent.stunned_rounts += 3
+                        opponent.stunned_rounds += 3
                     else:
                         print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} is already silenced!".format(name=self.name, spell=spell_name, name_o=opponent.name))
                 else:
