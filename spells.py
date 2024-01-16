@@ -1,6 +1,7 @@
 import random
 from Levenshtein import distance
 
+SPELL_TYPE_NONE         = -1
 SPELL_TYPE_USELESS      = 0
 SPELL_TYPE_DEFENSE      = 1
 SPELL_TYPE_COMMON       = 2
@@ -89,8 +90,9 @@ spell_avada_kedavra     =   Spell("Avada Kedavra",      999, 999,  2,  "Instantl
 spell_crucio            =   Spell("Crucio",             999, 500,   5,  "Cause excruciating pain to your opponent, causing alot of damage and making them unable to cast spells for 5 moves", SPELL_TYPE_UNFORGIVABLE)
 spell_imperio           =   Spell("Imperio",            999,  -1,   3,  "Muddle with your opponent's mind, convincing them to stop casting spells for 10 moves", SPELL_TYPE_UNFORGIVABLE)
 
-# spell_none, used as a fallback if an invalid spell was casted
-spell_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_USELESS)
+# Internal usage
+spell_object_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
+spell_object_stunned = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) object when stunned", SPELL_TYPE_NONE)
 
 ##
 ## Standalone spell functions
@@ -107,7 +109,7 @@ def find_spell_by_name(input: str): # Returns a list with: [spell_object, levens
                 dist = distance(i.name.title(), input.title())
                 if dist < MAX_LEVENSHTEIN_DISTANCE:
                     return [i, dist]
-    return [spell_none, 0]
+    return [spell_object_none, 0]
 
 def print_spells():
     header_spells_useless = "== USELESS SPELLS =="
@@ -117,7 +119,7 @@ def print_spells():
     header_spells_unforgivable = "== UNFORGIVABLE CURSES =="
 
     for i in Spell.spellList:
-        if i.type == SPELL_TYPE_UNFORGIVABLE or i.type == SPELL_TYPE_USELESS:
+        if i.type == SPELL_TYPE_UNFORGIVABLE or i.type == SPELL_TYPE_USELESS or i.type == SPELL_TYPE_NONE:
             continue
         
         if i.type == SPELL_TYPE_USELESS and header_spells_useless:
