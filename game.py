@@ -41,7 +41,7 @@ def get_player_spell_from_input(player: Player):
                 continue
             elif player_input.find("help", 0) != -1:
                 find_what = player_input[5:]
-                spell = find_spell_by_name(find_what)
+                spell = find_spell_by_name(find_what)[0]
 
                 if spell == spell_none:
                     print("<!> Spell '{what}' does not exist!".format(what=find_what))
