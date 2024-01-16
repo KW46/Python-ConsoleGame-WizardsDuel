@@ -126,16 +126,16 @@ class Player:
                 elif not spell_succes:
                     print("- {name}: (nothing, still stunned)".format(name=self.name))
             elif self.active_spell is spell_impendimenta:
-                if opponent.active_spell is not spell_protego:
-                    print("- {name} casts {spell} on {name_o}. {name_o} is slowed and their next offensive move will have a 33% slower spell speed!".format(name=self.name, name_o=opponent.name, spell=spell_name))
-                    opponent.decreased_spell_speed = True
-                else:
+                if opponent.active_spell is spell_protego and opponent.active_spell_succes:
                     print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, name_o=opponent.name, spell=spell_name))
+                else:
+                    print("- {name} casts {spell} on {name_o}. {name_o} is slowed and their next offensive move will have a 33% slower spell speed!".format(name=self.name, name_o=opponent.name, spell=spell_name))
+                    opponent.decreased_spell_speed = True                    
             elif self.active_spell is spell_lumos_solem:
                 # Light still goes through the shield, therefor always succeed blinding attempts
                 print("- {name} casts {spell} on {name_o}. {name_o} is blinded and their next offensive move will have 33% less damage!".format(name=self.name, name_o=opponent.name, spell=spell_name))
                 opponent.decreased_spell_damage = True
-            elif self.active_spell is spell_protego:
+            elif self.active_spell is spell_protego and self.active_spell_succes:
                 print("- {name} casts {spell}".format(name=self.name, spell=spell_name))
             else:
                 print("<!> [debug]{name} casted SPELL_TYPE_DEFENSE {spell}. Behaviour unscripted!".format(name=self.name, spell=spell_name))
@@ -161,20 +161,20 @@ class Player:
 
         else:
             if self.active_spell is spell_mimblewimble:
-                if opponent.active_spell is not spell_protego:
-                    print("- {name} casts {spell} on {name_o}. {name_o}'s tongue is tied in a knot. That's annoying! {name_o} is silenced for 1 (more) move".format(name=self.name, spell=spell_name, name_o=opponent.name))
-                    opponent.add_stunned_rounds(-self.active_spell.damage)
-                else:
+                if opponent.active_spell is spell_protego and opponent.active_spell_succes:
                     print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))
+                else:
+                    print("- {name} casts {spell} on {name_o}. {name_o}'s tongue is tied in a knot. That's annoying! {name_o} is silenced for 1 (more) move".format(name=self.name, spell=spell_name, name_o=opponent.name))
+                    opponent.add_stunned_rounds(-self.active_spell.damage)                    
             elif self.active_spell is spell_silencio:
-                if opponent.active_spell is not spell_protego:
+                if opponent.active_spell is spell_protego and opponent.active_spell_succes:
+                    print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))
+                else:
                     if opponent.stunned_rounds == 0:
                         print("- {name} casts {spell} on {name_o}. SUCCES! {name_o} is silenced for 3 (more) moves".format(name=self.name, spell=spell_name, name_o=opponent.name))
                         opponent.add_stunned_rounds(-self.active_spell.damage)
                     else:
-                        print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} is already silenced!".format(name=self.name, spell=spell_name, name_o=opponent.name))
-                else:
-                    print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))
+                        print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} is already silenced!".format(name=self.name, spell=spell_name, name_o=opponent.name))                    
             else:
                 damage_penalty = self.active_spell_levenshtein_distance * 15
                 if damage_penalty != 0: print("<!> {name} was unclear in their pronunciation and receives a damage penalty of {damage_penalty}".format(name=self.name, damage_penalty=damage_penalty))
@@ -188,8 +188,8 @@ class Player:
                 total_damage = self.active_spell.damage * self.wand.damage * damage_modifier - damage_penalty
                 if total_damage < 0: total_damage = 0
 
-                if opponent.active_spell is spell_protego:
-                    print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))
+                if opponent.active_spell is spell_protego and opponent.active_spell_succes:
+                    print("- {name} casts {spell} on {name_o}. FAILURE! {name_o} blocks the attack!".format(name=self.name, spell=spell_name, name_o=opponent.name))                
                 else:
                     print("- {name} casts {spell} on {name_o} causing {dmg} damage!".format(name=self.name, spell=spell_name, name_o=opponent.name, dmg=total_damage))
-                    opponent.take_health(total_damage)
+                    opponent.take_health(total_damage)                        
