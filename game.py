@@ -118,6 +118,16 @@ try:
             # Weird, right? To have round_end() at the start of a round.
             # There will be multiple conditions where the current iteration will end.
             # I'm lazy, hence why it's here :-)
+
+            if player1.health == 0:
+                print("END! {name} has been defeated. Congratulations {name2}!".format(name=player1.name, name2=player2.name))
+                game_running = False
+                break
+            elif player2.health == 0:
+                print("END! {name} has been defeated. Congratulations {name2}!".format(name=player2.name, name2=player1.name))
+                game_running = False
+                break
+
             round_end() 
         
         print("== Round {round} ==".format(round=current_round))
@@ -201,13 +211,6 @@ try:
         fastest_caster.active_spell_levenshtein_distance = 0
         slowest_caster.active_spell = spell_object_none
         slowest_caster.active_spell_levenshtein_distance = 0
-
-        if player1.health == 0:
-            print("END! {name} has been defeated. Congratulations {name2}!".format(name=player1.name, name2=player2.name))
-            game_running = False
-        elif player2.health == 0:
-            print("END! {name} has been defeated. Congratulations {name2}!".format(name=player2.name, name2=player1.name))
-            game_running = False
 
 except KeyboardInterrupt:
     print()
