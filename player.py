@@ -146,15 +146,8 @@ class Player:
                 opponent.health = 0
             elif self.active_spell is spell_crucio:
                 print("- THE NERVE! {name} casts the torture curse. {name_o} is greatly hurt and falls to the ground. They are stunned for 5 (more) moves".format(name=self.name, name_o=opponent.name))
-                
-                if self.decreased_spell_damage:
-                    self.decreased_spell_damage = False
-                    damage_modifier = 0.67
-                else:
-                    damage_modifier = 1
-
                 opponent.add_stunned_rounds(5)
-                opponent.take_health(self.active_spell.damage * damage_modifier)
+                opponent.take_health(self.active_spell.damage)
             elif self.active_spell is spell_imperio:
                 print("- THE NERVE! {name} casts the Imperius curse. \"Why don't you take a nice nap for {max_stunned_rounds} moves, {name_o}?\". {name_o} submits with pleasure".format(name=self.name, name_o=opponent.name, max_stunned_rounds=MAX_STUNNED_ROUNDS))
                 opponent.add_stunned_rounds(MAX_STUNNED_ROUNDS)
