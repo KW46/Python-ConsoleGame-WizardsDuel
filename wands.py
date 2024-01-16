@@ -39,7 +39,7 @@ class Wand:
 
     def __repr__(self):
         return"\t{id}: {wood} wand with core: {core}\n\t\t-- SPEED: {info_speed}\tDAMAGE: {info_dmg}\tSUCCES RATE: {info_srate}".format(
-            id=self.id, wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=self.damage
+            id=self.id, wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=round(self.damage, 2)
         )
     
     def get_wand_core(self):

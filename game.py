@@ -43,7 +43,7 @@ def get_player_spell_from_input(player: Player):
                 find_what = player_input[5:]
                 spell = find_spell_by_name(find_what)[0]
 
-                if spell == spell_none:
+                if spell is spell_object_none:
                     print("<!> Spell '{what}' does not exist!".format(what=find_what))
                 else:
                     print(spell)
@@ -124,8 +124,10 @@ try:
         player1.active_spell, player1.active_spell_levenshtein_distance = get_player_spell_from_input(player1)
         player2.active_spell, player2.active_spell_levenshtein_distance = get_player_spell_from_input(player2)
 
-        player1.active_spell = player1.active_spell
-        player2.active_spell = player2.active_spell
+        if (player1.stunned_rounds > 0 and player1.active_spell is not spell_finite_incantatem):
+            player1.active_spell = spell_object_stunned
+        if (player2.stunned_rounds > 0 and player2.active_spell is not spell_finite_incantatem):
+            player2.active_spell = spell_object_stunned
 
         # OUTCOME: SPELLS
         #   > Get spell succes
@@ -173,6 +175,11 @@ try:
             player2.active_spell_speed *= 0.67
             player2.decreased_spell_speed = False
 
+        if player1.decreased_spell_damage and (player1.active_spell.type == SPELL_TYPE_COMMON or player1.active_spell.type == SPELL_TYPE_POWERFUL):
+            print("<!> {name} is blinded, spell damage decreased by 33%!".format(name=player1.name))
+        if player2.decreased_spell_damage and (player2.active_spell.type == SPELL_TYPE_COMMON or player2.active_spell.type == SPELL_TYPE_POWERFUL):
+            print("<!> {name} is blinded, spell damage decreased by 33%!".format(name=player2.name))       
+
         fastest_caster = player1
         slowest_caster = player2
         if player2.active_spell_speed > player1.active_spell_speed:
@@ -190,9 +197,9 @@ try:
         if slowest_caster.health > 0:
             slowest_caster.cast_spell(fastest_caster)
 
-        fastest_caster.active_spell = spell_none
+        fastest_caster.active_spell = spell_object_none
         fastest_caster.active_spell_levenshtein_distance = 0
-        slowest_caster.active_spell = spell_none
+        slowest_caster.active_spell = spell_object_none
         slowest_caster.active_spell_levenshtein_distance = 0
 
         if player1.health == 0:
