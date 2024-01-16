@@ -124,9 +124,6 @@ try:
         player1.active_spell, player1.active_spell_levenshtein_distance = get_player_spell_from_input(player1)
         player2.active_spell, player2.active_spell_levenshtein_distance = get_player_spell_from_input(player2)
 
-        player1.active_spell = player1.active_spell
-        player2.active_spell = player2.active_spell
-
         # OUTCOME: SPELLS
         #   > Get spell succes
         player1.active_spell_succes = player1.get_spell_succes_rate(player1.active_spell) > random.random() * 100

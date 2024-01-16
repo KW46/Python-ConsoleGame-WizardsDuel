@@ -9,6 +9,7 @@ class Player:
         self.health = MAX_PLAYER_HEALTH
         self.wand = wand
         self.active_spell = spell_none
+        self.active_spell_succes = False
         self.active_spell_levenshtein_distance = 0 # Penalty => If >0 then damage reduction, 15% per distance
 
         self.stunned_rounds = 0
