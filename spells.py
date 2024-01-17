@@ -1,5 +1,4 @@
 import random
-from Levenshtein import distance
 
 SPELL_TYPE_NONE         = -1
 SPELL_TYPE_USELESS      = 0
@@ -15,6 +14,9 @@ CHANCE_HEAL_FULLY       = 5
 #Maximum Levenshtein distance. Eg if a user casts 'Pritrgo' instead of 'Protego', distance would be 2 and Protego would still be cast if MAX_LEVENSHTEIN_DISTANCE is at least 2
 #Set to 0 to disable
 MAX_LEVENSHTEIN_DISTANCE = 3
+
+if MAX_LEVENSHTEIN_DISTANCE > 0:
+    from Levenshtein import distance
 
 __INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
 
@@ -45,7 +47,7 @@ class Spell:
         self.type = type
 
     def __repr__(self):
-        return " ['{spell}']\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(spell=self.name, type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
+        return "\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
     
     def chance_heal_partly_succes(self):
         return self.type == SPELL_TYPE_DEFENSE and CHANCE_HEAL_PARTLY > random.random() * 100
@@ -94,18 +96,18 @@ spell = {
 ## Standalone spell functions
 ##
 def random_combat_spell():
-    return random.choice([i for i in Spell.spellList if i.type == SPELL_TYPE_COMMON])
+    return random.choice([i for i in spell.items() if i[1].type == SPELL_TYPE_COMMON]) # note: returns tuple ('spell_name', spell_obj)
 
-def find_spell_by_name(input: str): # Returns a list with: [spell_object, levenshtein_distance]. If distance is greater than 0 (typos were made), damage goes down
-    for i in Spell.spellList:
-        if input.title() == i.name.title():
-            return [i, 0]
-        else:
-            if MAX_LEVENSHTEIN_DISTANCE > 0:
-                dist = distance(i.name.title(), input.title())
-                if dist < MAX_LEVENSHTEIN_DISTANCE:
-                    return [i, dist]
-    return [spell_object_none, 0]
+def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spell_name', spell_object), levenshtein_distance )
+    ret = (input, spell.get(input.title(), spell[__INVALID_SPELL]))
+    dist = 0
+    if ret[1] == spell[__INVALID_SPELL] and MAX_LEVENSHTEIN_DISTANCE > 0:
+        for i in spell.items():
+            dist = distance(i[0].title(), input.title())
+            if dist <= MAX_LEVENSHTEIN_DISTANCE:
+                ret = i
+                break
+    return (ret, dist)
 
 def print_spells():
     header_spells_useless = "== USELESS SPELLS =="
@@ -114,24 +116,29 @@ def print_spells():
     header_spells_powerful = "== POWERFUL COMBAT SPELLS =="
     header_spells_unforgivable = "== UNFORGIVABLE CURSES =="
 
-    for i in Spell.spellList:
-        if i.type == SPELL_TYPE_UNFORGIVABLE or i.type == SPELL_TYPE_USELESS or i.type == SPELL_TYPE_NONE:
+    for i in spell.items():
+        if i[1].type == SPELL_TYPE_UNFORGIVABLE or i[1].type == SPELL_TYPE_USELESS or i[1].type == SPELL_TYPE_NONE:
             continue
         
-        if i.type == SPELL_TYPE_USELESS and header_spells_useless:
+        if i[1].type == SPELL_TYPE_USELESS and header_spells_useless:
             print("\n"+header_spells_useless)
             header_spells_useless = ""
-        elif i.type == SPELL_TYPE_DEFENSE and header_spells_defensive:
+        elif i[1].type == SPELL_TYPE_DEFENSE and header_spells_defensive:
             print("\n"+header_spells_defensive)
             header_spells_defensive = ""
-        elif i.type == SPELL_TYPE_COMMON and header_spells_common:
+        elif i[1].type == SPELL_TYPE_COMMON and header_spells_common:
             print("\n"+header_spells_common)
             header_spells_common = ""
-        elif i.type == SPELL_TYPE_POWERFUL and header_spells_powerful:
+        elif i[1].type == SPELL_TYPE_POWERFUL and header_spells_powerful:
             print("\n"+header_spells_powerful)
             header_spells_powerful = ""
-        elif i.type == SPELL_TYPE_UNFORGIVABLE and header_spells_unforgivable:
+        elif i[1].type == SPELL_TYPE_UNFORGIVABLE and header_spells_unforgivable:
             print("\n"+header_spells_unforgivable)
             header_spells_unforgivable = ""
 
-        print(i)
+        print(
+            str(i)
+              .strip('(')
+              .strip(')')
+              .replace(',', ':', 1)
+        )
