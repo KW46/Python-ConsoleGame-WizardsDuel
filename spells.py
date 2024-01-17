@@ -22,11 +22,8 @@ __INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
 ## Spell class
 ##
 class Spell:
-    spellList = []
-
     #Class special methods
     """
-        name        (str)   Name of the spell as used in combat
         speed       (int)   Speed of the spell. This will determine what spell is casted first.
         damage      (int)   Damage that the spell does. 
                             <!> Negative damage takes away moves from opponent (eg -2 = cancel 2 moves of opponent)
@@ -39,15 +36,12 @@ class Spell:
                             - SPELL_TYPE_POWER: Powerful combat spell - deals alot of damage or takes away a few moves from opponent
                             - SPELL_TYPE_UNFORGIVABLE: deals alot of damage or takes away alot of moves from opponent
     """
-    def __init__(self, name: str, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON):
-        self.name = name
+    def __init__(self, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON):
         self.speed = speed
         self.damage = damage
         self.succes_rate = succes_rate
         self.description = description
         self.type = type
-
-        Spell.spellList.append(self)
 
     def __repr__(self):
         return " ['{spell}']\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(spell=self.name, type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
@@ -61,38 +55,39 @@ class Spell:
 ##
 ## Spells
 ##
-# Useless spells - These don't do anything useful in combat
-spell_lumos             =   Spell("Lumos",              100, 000, 100, "Creates a small light at the tip of your wand", SPELL_TYPE_USELESS)
-spell_nox               =   Spell("Nox",                100, 000, 100, "Counter spell of Lumos", SPELL_TYPE_USELESS)
-spell_rennervate        =   Spell("Rennervate",         100, 000, 100, "Revives your opponent if they are stunned", SPELL_TYPE_USELESS)
-spell_igni              =   Spell("Igno",               100, 000, 100, "Damages an enemy using fire. Except, this is a Witcher sign. It thus has no effect at all", SPELL_TYPE_USELESS)
+spell = {
+    # Useless spells - These don't do anything useful in combat
+    "Lumos",                Spell(100, 000, 100, "Creates a small light at the tip of your wand", SPELL_TYPE_USELESS),
+    "Nox",                  Spell(100, 000, 100, "Counter spell of Lumos", SPELL_TYPE_USELESS),
+    "Rennervate",           Spell(100, 000, 100, "Revives your opponent if they are stunned", SPELL_TYPE_USELESS),
+    "Igni",                 Spell(100, 000, 100, "Damages an enemy using fire. Except, this is a Witcher sign. It thus has no effect at all", SPELL_TYPE_USELESS),
 
 # Defensive spell. Each cast from this category has a 5% chance of completely restoring health or 25% chance to heal 5% of maximum health
-spell_finite_incantatem =   Spell("Finite Incantatem",  100, 000,  45,  "Cancel all effects casted upon you. If you are stunned/silenced, there's a 10% chance this spell might work", SPELL_TYPE_DEFENSE)
-spell_impendimenta      =   Spell("Impendimenta",        94, 000,  60,  "Slows your opponent. EFFECT: Decrease opponent's spell speed by 33% in their next offensive move", SPELL_TYPE_DEFENSE)
-spell_lumos_solem       =   Spell("Lumos Solem",         94, 000,  60,  "Blinds your opponent. EFFECT: Decrease opponent's spell damage by 33% in their next offensive move", SPELL_TYPE_DEFENSE)
-spell_protego           =   Spell("Protego",            100, 000,  80,  "Create a shield that blocks most attacks", SPELL_TYPE_DEFENSE)
+    "Finite Incantatem",    Spell(100, 000,  45,  "Cancel all effects casted upon you. If you are stunned/silenced, there's a 10% chance this spell might work", SPELL_TYPE_DEFENSE),
+    "Impendimenta",         Spell(94, 000,  60,  "Slows your opponent. EFFECT: Decrease opponent's spell speed by 33% in their next offensive move", SPELL_TYPE_DEFENSE),
+    "Lumos Solem",          Spell(94, 000,  60,  "Blinds your opponent. EFFECT: Decrease opponent's spell damage by 33% in their next offensive move", SPELL_TYPE_DEFENSE),
+    "Protego",              Spell(100, 000,  80,  "Create a shield that blocks most attacks", SPELL_TYPE_DEFENSE),
 
 # Common combat spells. High chance of succes, deals some damage
-spell_reducto           =   Spell("Reducto",             75, 150,  85,  "Blast an object near your opponent")
-spell_rictusempra       =   Spell("Rictusempra",         85,  90,  90,  "Causes your opponent to curl up in laughter, tiring them out")
-spell_stupefy           =   Spell("Stupefy",             95,  75,  95,  "Knock over your opponent")
+    "Reducto",              Spell(75, 150,  85,  "Blast an object near your opponent"),
+    "Rictusempra",          Spell(85,  90,  90,  "Causes your opponent to curl up in laughter, tiring them out"),
+    "Stupefy",              Spell(95,  75,  95,  "Knock over your opponent"),
 
 # Powerful combat spells. Medium chance of succes, deals more damage or stuns opponents
-spell_bombarda          =   Spell("Bombarda",            50, 180,  75,  "Creates an explosion near your opponent", SPELL_TYPE_POWERFUL)
-spell_confringo         =   Spell("Confringo",           50, 200,  70,  "Creates an explosion directly at your opponent", SPELL_TYPE_POWERFUL)
-spell_mimblewimble      =   Spell("Mimblewimble",        50,  -1,  70,  "Ties a knot in your opponents tongue, causing them to be unable to cast a spell for 1 (more) move", SPELL_TYPE_POWERFUL)
-spell_sectumsempra      =   Spell("Sectumsempra",        90, 400,  35,  "Slices your opponent", SPELL_TYPE_POWERFUL)
-spell_silencio          =   Spell("Silencio",            35,  -3,  55,  "Silences your opponent, causing them unable to cast spells for 3 moves. <!>Only works if opponent is not stunned yet", SPELL_TYPE_POWERFUL)
+    "Bombarda",             Spell(50, 180,  75,  "Creates an explosion near your opponent", SPELL_TYPE_POWERFUL),
+    "Confringo",            Spell(50, 200,  70,  "Creates an explosion directly at your opponent", SPELL_TYPE_POWERFUL),
+    "Mimblewimble",         Spell(50,  -1,  70,  "Ties a knot in your opponents tongue, causing them to be unable to cast a spell for 1 (more) move", SPELL_TYPE_POWERFUL),
+    "Sectumsempra",         Spell(90, 400,  35,  "Slices your opponent", SPELL_TYPE_POWERFUL),
+    "Silencio",             Spell(35,  -3,  55,  "Silences your opponent, causing them unable to cast spells for 3 moves. <!>Only works if opponent is not stunned yet", SPELL_TYPE_POWERFUL),
 
 # Unforgivable spells. Very low chance of success, instantly kills or deals alot of damage/stun amount
-spell_avada_kedavra     =   Spell("Avada Kedavra",      999, 999,  2,  "Instantly end your opponent", SPELL_TYPE_UNFORGIVABLE)
-spell_crucio            =   Spell("Crucio",             999, 500,   5,  "Cause excruciating pain to your opponent, causing alot of damage and making them unable to cast spells for 5 moves", SPELL_TYPE_UNFORGIVABLE)
-spell_imperio           =   Spell("Imperio",            999,  -1,   3,  "Muddle with your opponent's mind, convincing them to stop casting spells for 10 moves", SPELL_TYPE_UNFORGIVABLE)
+    "Avada Kedavra",        Spell(999, 999,  2,  "Instantly end your opponent", SPELL_TYPE_UNFORGIVABLE),
+    "Crucio",               Spell(999, 500,   5,  "Cause excruciating pain to your opponent, causing alot of damage and making them unable to cast spells for 5 moves", SPELL_TYPE_UNFORGIVABLE),
+    "Imperio",              Spell(999,  -1,   3,  "Muddle with your opponent's mind, convincing them to stop casting spells for 10 moves", SPELL_TYPE_UNFORGIVABLE),
 
 # Internal usage
-spell_object_none = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
-spell_object_stunned = Spell(__INVALID_SPELL, 0, 0, 0, "(internal) object when stunned", SPELL_TYPE_NONE)
+    __INVALID_SPELL,        Spell(__INVALID_SPELL, 0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
+}
 
 ##
 ## Standalone spell functions
