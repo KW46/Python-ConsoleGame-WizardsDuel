@@ -1,5 +1,4 @@
 import random
-from Levenshtein import distance
 
 SPELL_TYPE_NONE         = -1
 SPELL_TYPE_USELESS      = 0
@@ -37,7 +36,6 @@ class Spell:
                             - SPELL_TYPE_UNFORGIVABLE: deals alot of damage or takes away alot of moves from opponent
     """
     def __init__(self, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON):
-
         self.speed = speed
         self.damage = damage
         self.succes_rate = succes_rate
@@ -45,7 +43,7 @@ class Spell:
         self.type = type
 
     def __repr__(self):
-        return " ['{spell}']\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(spell=self.name, type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
+        return " ['todo']\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
     
     def chance_heal_partly_succes(self):
         return self.type == SPELL_TYPE_DEFENSE and CHANCE_HEAL_PARTLY > random.random() * 100
@@ -56,7 +54,7 @@ class Spell:
 ##
 ## Spells
 ##
-spell = {
+spellz = {
     # Useless spells - These don't do anything useful in combat
     "Lumos":                Spell(100, 000, 100, "Creates a small light at the tip of your wand", SPELL_TYPE_USELESS),
     "Nox":                  Spell(100, 000, 100, "Counter spell of Lumos", SPELL_TYPE_USELESS),
@@ -90,48 +88,4 @@ spell = {
     __INVALID_SPELL:        Spell(0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
 }
 
-##
-## Standalone spell functions
-##
-def random_combat_spell():
-    return random.choice([i for i in Spell.spellList if i.type == SPELL_TYPE_COMMON])
-
-def find_spell_by_name(input: str): # Returns a list with: [spell_object, levenshtein_distance]. If distance is greater than 0 (typos were made), damage goes down
-    for i in Spell.spellList:
-        if input.title() == i.name.title():
-            return [i, 0]
-        else:
-            if MAX_LEVENSHTEIN_DISTANCE > 0:
-                dist = distance(i.name.title(), input.title())
-                if dist < MAX_LEVENSHTEIN_DISTANCE:
-                    return [i, dist]
-    return [spell_object_none, 0]
-
-def print_spells():
-    header_spells_useless = "== USELESS SPELLS =="
-    header_spells_defensive = "== DEFENSIVE SPELLS =="
-    header_spells_common = "== COMMON COMBAT SPELLS =="
-    header_spells_powerful = "== POWERFUL COMBAT SPELLS =="
-    header_spells_unforgivable = "== UNFORGIVABLE CURSES =="
-
-    for i in Spell.spellList:
-        if i.type == SPELL_TYPE_UNFORGIVABLE or i.type == SPELL_TYPE_USELESS or i.type == SPELL_TYPE_NONE:
-            continue
-        
-        if i.type == SPELL_TYPE_USELESS and header_spells_useless:
-            print("\n"+header_spells_useless)
-            header_spells_useless = ""
-        elif i.type == SPELL_TYPE_DEFENSE and header_spells_defensive:
-            print("\n"+header_spells_defensive)
-            header_spells_defensive = ""
-        elif i.type == SPELL_TYPE_COMMON and header_spells_common:
-            print("\n"+header_spells_common)
-            header_spells_common = ""
-        elif i.type == SPELL_TYPE_POWERFUL and header_spells_powerful:
-            print("\n"+header_spells_powerful)
-            header_spells_powerful = ""
-        elif i.type == SPELL_TYPE_UNFORGIVABLE and header_spells_unforgivable:
-            print("\n"+header_spells_unforgivable)
-            header_spells_unforgivable = ""
-
-        print(i)
+print(spellz["Imperio"])
