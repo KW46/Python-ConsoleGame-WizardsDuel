@@ -7,12 +7,7 @@ WAND_WOOD_ELDER     = 1 #Speed  -4%
 WAND_WOOD_APPLE     = 2 #Damage -5%
 
 class Wand:
-    _next_wand_id = 1
-    wandList = []
-
     def __init__(self, wand_core: int, wand_wood: int):
-        self.id = Wand._next_wand_id
-
         self.core = wand_core
         self.wood = wand_wood
 
@@ -34,12 +29,9 @@ class Wand:
         elif self.wood == WAND_WOOD_APPLE:
             self.damage *= 0.95
 
-        Wand.wandList.append(self)
-        Wand._next_wand_id += 1
-
     def __repr__(self):
-        return"\t{id}: {wood} wand with core: {core}\n\t\t-- SPEED: {info_speed}\tDAMAGE: {info_dmg}\tSUCCES RATE: {info_srate}".format(
-            id=self.id, wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=round(self.damage, 2)
+        return"\t{wood} wand with core: {core}\n\t\t-- SPEED: {info_speed}\tDAMAGE: {info_dmg}\tSUCCES RATE: {info_srate}".format(
+            wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=round(self.damage, 2)
         )
     
     def get_wand_core(self):
@@ -57,14 +49,16 @@ class Wand:
 ##
 ## Wands
 ##
-wand_1 = Wand(WAND_CORE_UNICORN, WAND_WOOD_ASH)
-wand_2 = Wand(WAND_CORE_UNICORN, WAND_WOOD_ELDER)
-wand_3 = Wand(WAND_CORE_UNICORN, WAND_WOOD_APPLE)
+wand = {
+    1:  Wand(WAND_CORE_UNICORN, WAND_WOOD_ASH),
+    2:  Wand(WAND_CORE_UNICORN, WAND_WOOD_ELDER),
+    3:  Wand(WAND_CORE_UNICORN, WAND_WOOD_APPLE),
 
-wand_4 = Wand(WAND_CORE_PHOENIX, WAND_WOOD_ASH)
-wand_5 = Wand(WAND_CORE_PHOENIX, WAND_WOOD_ELDER)
-wand_6 = Wand(WAND_CORE_PHOENIX, WAND_WOOD_APPLE)
+    4:  Wand(WAND_CORE_PHOENIX, WAND_WOOD_ASH),
+    5:  Wand(WAND_CORE_PHOENIX, WAND_WOOD_ELDER),
+    6:  Wand(WAND_CORE_PHOENIX, WAND_WOOD_APPLE),
 
-wand_7 = Wand(WAND_CORE_DRAGON, WAND_WOOD_ASH)
-wand_8 = Wand(WAND_CORE_DRAGON, WAND_WOOD_ELDER)
-wand_9 = Wand(WAND_CORE_DRAGON, WAND_WOOD_APPLE)        
+    7:  Wand(WAND_CORE_DRAGON, WAND_WOOD_ASH),
+    8:  Wand(WAND_CORE_DRAGON, WAND_WOOD_ELDER),
+    9:  Wand(WAND_CORE_DRAGON, WAND_WOOD_APPLE)
+}
