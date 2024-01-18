@@ -18,7 +18,7 @@ MAX_LEVENSHTEIN_DISTANCE = 3
 if MAX_LEVENSHTEIN_DISTANCE > 0:
     from Levenshtein import distance
 
-__INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
+_INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
 
 ##
 ## Spell class
@@ -39,7 +39,6 @@ class Spell:
                             - SPELL_TYPE_UNFORGIVABLE: deals alot of damage or takes away alot of moves from opponent
     """
     def __init__(self, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON):
-
         self.speed = speed
         self.damage = damage
         self.succes_rate = succes_rate
@@ -55,10 +54,13 @@ class Spell:
     def chance_heal_fully_succes(self):
         return self.type == SPELL_TYPE_DEFENSE and CHANCE_HEAL_FULLY > random.random() * 100
     
+    def get_spell_name(self):
+        return str(list(i for i in spells if spells[i] == self)).strip("[]'")
+    
 ##
 ## Spells
 ##
-spell = {
+spells = {
     # Useless spells - These don't do anything useful in combat
     "Lumos":                Spell(100, 000, 100, "Creates a small light at the tip of your wand", SPELL_TYPE_USELESS),
     "Nox":                  Spell(100, 000, 100, "Counter spell of Lumos", SPELL_TYPE_USELESS),
@@ -89,7 +91,7 @@ spell = {
     "Imperio":              Spell(999,  -1,   3,  "Muddle with your opponent's mind, convincing them to stop casting spells for 10 moves", SPELL_TYPE_UNFORGIVABLE),
 
 # Internal usage
-    __INVALID_SPELL:        Spell(0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
+    _INVALID_SPELL:        Spell(0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
 }
 
 ##
@@ -99,9 +101,9 @@ def random_combat_spell():
     return random.choice([i for i in spell.items() if i[1].type == SPELL_TYPE_COMMON]) # note: returns tuple ('spell_name', spell_obj)
 
 def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spell_name', spell_object), levenshtein_distance )
-    ret = (input, spell.get(input.title(), spell[__INVALID_SPELL]))
+    ret = (input, spell.get(input.title(), spell[_INVALID_SPELL]))
     dist = 0
-    if ret[1] == spell[__INVALID_SPELL] and MAX_LEVENSHTEIN_DISTANCE > 0:
+    if ret[1] == spell[_INVALID_SPELL] and MAX_LEVENSHTEIN_DISTANCE > 0:
         for i in spell.items():
             dist = distance(i[0].title(), input.title())
             if dist <= MAX_LEVENSHTEIN_DISTANCE:
