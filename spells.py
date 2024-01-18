@@ -1,5 +1,8 @@
 import random
-from game_config import CHANCE_HEAL_PARTLY, CHANCE_HEAL_FULLY, DEBUG_MODE
+from game_config import CHANCE_HEAL_PARTLY, CHANCE_HEAL_FULLY, DEBUG_MODE, MAX_LEVENSHTEIN_DISTANCE
+
+if MAX_LEVENSHTEIN_DISTANCE > 0:
+    from Levenshtein import distance
 
 SPELL_TYPE_NONE         = -1
 SPELL_TYPE_USELESS      = 0
@@ -7,15 +10,6 @@ SPELL_TYPE_DEFENSE      = 1
 SPELL_TYPE_COMMON       = 2
 SPELL_TYPE_POWERFUL     = 3
 SPELL_TYPE_UNFORGIVABLE = 4
-
-
-
-#Maximum Levenshtein distance. Eg if a user casts 'Pritrgo' instead of 'Protego', distance would be 2 and Protego would still be cast if MAX_LEVENSHTEIN_DISTANCE is at least 2
-#Set to 0 to disable
-MAX_LEVENSHTEIN_DISTANCE = 0
-
-if MAX_LEVENSHTEIN_DISTANCE > 0:
-    from Levenshtein import distance
 
 _INVALID_SPELL = ".@wizardduel@__spell_invalid__" #Internal usage only
 
