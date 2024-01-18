@@ -1,8 +1,10 @@
-#import random
-from player import *
-from wands import *
+import random
+from player import Player
+from wands import wands
 from spells import SPELL_TYPE_COMMON, SPELL_TYPE_POWERFUL, _INVALID_SPELL
 from spells import random_combat_spell, print_spells, find_spell_by_name
+from spells import spells
+from game_config import MAX_PLAYER_HEALTH
 
 ##
 ## Definitions

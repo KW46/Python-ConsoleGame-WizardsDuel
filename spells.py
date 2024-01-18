@@ -1,4 +1,5 @@
 import random
+from game_config import CHANCE_HEAL_PARTLY, CHANCE_HEAL_FULLY, DEBUG_MODE
 
 SPELL_TYPE_NONE         = -1
 SPELL_TYPE_USELESS      = 0
@@ -7,9 +8,7 @@ SPELL_TYPE_COMMON       = 2
 SPELL_TYPE_POWERFUL     = 3
 SPELL_TYPE_UNFORGIVABLE = 4
 
-# If SPELL_TYPE_DEFENSE is casted, always these chances to heal partly (restore 5% of max hp) or completely
-CHANCE_HEAL_PARTLY      = 25
-CHANCE_HEAL_FULLY       = 5
+
 
 #Maximum Levenshtein distance. Eg if a user casts 'Pritrgo' instead of 'Protego', distance would be 2 and Protego would still be cast if MAX_LEVENSHTEIN_DISTANCE is at least 2
 #Set to 0 to disable
@@ -94,6 +93,11 @@ spells = {
     _INVALID_SPELL:        Spell(0, 0, 0, "(internal) invalid spell", SPELL_TYPE_NONE)
 }
 
+# Set succes rates to 100% if debug mode is enabled
+if DEBUG_MODE:
+    for i in spells.items():
+        i[1].succes_rate = 100
+
 ##
 ## Standalone spell functions
 ##
@@ -145,4 +149,4 @@ def print_spells():
               .strip('(')
               .strip(')')
               .replace(',', ':', 1)
-        )
+        )   

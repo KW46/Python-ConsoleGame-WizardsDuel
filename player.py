@@ -2,9 +2,7 @@ import random
 from wands import Wand
 from spells import SPELL_TYPE_NONE, SPELL_TYPE_USELESS, SPELL_TYPE_DEFENSE, SPELL_TYPE_UNFORGIVABLE#, SPELL_TYPE_COMMON, SPELL_TYPE_POWERFUL
 from spells import Spell, spells, _INVALID_SPELL
-
-MAX_PLAYER_HEALTH = 1000
-MAX_STUNNED_ROUNDS = 10
+from game_config import MAX_PLAYER_HEALTH, MAX_STUNNED_ROUNDS
 
 class Player:
     def __init__(self, name: str, wand: Wand):
