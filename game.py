@@ -47,12 +47,12 @@ def get_player_spell_from_input(player: Player):
                 continue
             elif player_input.find("help", 0) != -1:
                 find_what = player_input[5:]
-                spell = spells.get(find_spell_by_name(find_what)[0][0], None)
+                spell_name, spell_obj = find_spell_by_name(find_what)[0]
 
-                if spell is spells[_INVALID_SPELL]:
-                    print("<!> Spell '{what}' does not exist!".format(what=find_what))
+                if spell_obj is spells[_INVALID_SPELL]:
+                    print("<!> Spell '{what}' does not exist!".format(what=spell_name))
                 else:
-                    print("'{spell_name}':{spell_desc}".format(spell_name=find_what, spell_desc=spells[find_what]))
+                    print("'{spell_name}':{spell_desc}".format(spell_name=spell_name, spell_desc=spell_obj))
                 continue
             else:
                 return find_spell_by_name(player_input)

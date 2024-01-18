@@ -107,7 +107,7 @@ def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spel
             for i in spells.items():
                 dist = distance(i[0].title(), input.title())
                 if dist <= MAX_LEVENSHTEIN_DISTANCE:
-                    ret[1] = i
+                    ret = (i[0], i[1])
                     break
     return (ret, dist)
 
