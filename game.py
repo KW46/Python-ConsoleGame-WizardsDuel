@@ -1,5 +1,8 @@
+#import random
 from player import *
 from wands import *
+from spells import SPELL_TYPE_COMMON, SPELL_TYPE_POWERFUL, _INVALID_SPELL
+from spells import random_combat_spell, print_spells, find_spell_by_name
 
 ##
 ## Definitions
@@ -34,19 +37,20 @@ def get_player_spell_from_input(player: Player):
         player_input = input(print_turn_message(player))
 
         if not player_input:
-            return [random_combat_spell(), 0]
+            spell_name, spell_obj = random_combat_spell()
+            return ((spell_name, spell_obj), 0)
         else:
             if player_input == "help":
                 print_spells()
                 continue
             elif player_input.find("help", 0) != -1:
                 find_what = player_input[5:]
-                spell = find_spell_by_name(find_what)[0]
+                spell = spells.get(find_spell_by_name(find_what)[0][0], None)
 
-                if spell is spell_object_none:
+                if spell is spells[_INVALID_SPELL]:
                     print("<!> Spell '{what}' does not exist!".format(what=find_what))
                 else:
-                    print(spell)
+                    print("'{spell_name}':{spell_desc}".format(spell_name=find_what, spell_desc=spells[find_what]))
                 continue
             else:
                 return find_spell_by_name(player_input)
@@ -72,8 +76,8 @@ while True:
 
 #GET: WANDS
 print("Welcome {p1_name} and {p2_name}! You're about to choose a wand to use in this duel! Available wands are:".format(p1_name=player1_name, p2_name=player2_name))
-for i in Wand.wandList:
-    print(i)
+for i in wands.items():
+    print("{wand_id}:{wand_desc}".format(wand_id=i[0], wand_desc=i[1]))
 
 #Player 1
 while (True):
@@ -81,10 +85,10 @@ while (True):
         wand_input = int(input("What wand do you want {name}? (Enter one of the numbers): ".format(name=player1_name)))
     except ValueError:
         continue
-    if wand_input < 1 or wand_input > len(Wand.wandList):
+    if wand_input < 1 or wand_input > len(wands):
         continue
 
-    player1_wand = Wand.wandList[wand_input-1]
+    player1_wand = wands[wand_input]
     break
 #Player 2
 while (True):
@@ -92,10 +96,10 @@ while (True):
         wand_input = int(input("What wand do you want {name}? (Enter one of the numbers): ".format(name=player2_name)))
     except ValueError:
         continue
-    if wand_input < 1 or wand_input > len(Wand.wandList):
+    if wand_input < 1 or wand_input > len(wands):
         continue
 
-    player2_wand = Wand.wandList[wand_input-1]
+    player2_wand = wands[wand_input]
     break
 
 player1 = Player(player1_name, player1_wand)
@@ -131,13 +135,18 @@ try:
             round_end() 
         
         print("== Round {round} ==".format(round=current_round))
-        player1.active_spell, player1.active_spell_levenshtein_distance = get_player_spell_from_input(player1)
-        player2.active_spell, player2.active_spell_levenshtein_distance = get_player_spell_from_input(player2)
+        spell, dist = get_player_spell_from_input(player1)
+        player1.active_spell = spells.get(spell[0])
+        player1.active_spell_levenshtein_distance = dist
 
-        if (player1.stunned_rounds > 0 and player1.active_spell is not spell_finite_incantatem):
-            player1.active_spell = spell_object_stunned
-        if (player2.stunned_rounds > 0 and player2.active_spell is not spell_finite_incantatem):
-            player2.active_spell = spell_object_stunned
+        spell, dist = get_player_spell_from_input(player2)
+        player2.active_spell = spells.get(spell[0])
+        player2.active_spell_levenshtein_distance = dist
+
+        if (player1.stunned_rounds > 0 and player1.active_spell is not spells["Finite Incantatem"]):
+            player1.active_spell = None
+        if (player2.stunned_rounds > 0 and player2.active_spell is not spells["Finite Incantatem"]):
+            player2.active_spell = None
 
         # OUTCOME: SPELLS
         #   > Get spell succes
@@ -150,17 +159,17 @@ try:
         #   > Add health if defensive spell was lucky (partial heal, fully heal)
         if player1.active_spell_succes and player1.active_spell.chance_heal_partly_succes():
             player1.give_health(MAX_PLAYER_HEALTH * 0.05)
-            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player1.name, spell=player1.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player1.name, spell=player1.active_spell.get_spell_name(), hp=MAX_PLAYER_HEALTH*0.05))
         elif player1.active_spell_succes and player1.active_spell.chance_heal_fully_succes() and player1.health < MAX_PLAYER_HEALTH:
             player1.give_health(MAX_PLAYER_HEALTH)
-            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player1.name, spell=player1.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player1.name, spell=player1.active_spell.get_spell_name(), hp=MAX_PLAYER_HEALTH*0.05))
         #
         if player2.active_spell_succes and player2.active_spell.chance_heal_partly_succes():
             player2.give_health(MAX_PLAYER_HEALTH * 0.05)
-            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player2.name, spell=player2.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))
+            print("<!> {name} casted {spell} above expectations, and receives {hp} health!".format(name=player2.name, spell=player2.active_spell.get_spell_name(), hp=MAX_PLAYER_HEALTH*0.05))
         elif player2.active_spell_succes and player2.active_spell.chance_heal_fully_succes() and player2.health < MAX_PLAYER_HEALTH:
             player2.give_health(MAX_PLAYER_HEALTH)
-            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2.active_spell.name, hp=MAX_PLAYER_HEALTH*0.05))            
+            print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2.active_spell.get_spell_name(), hp=MAX_PLAYER_HEALTH*0.05))            
 
         #   > Determine instant winner or skip to next round
         if not player1.active_spell_succes and not player2.active_spell_succes:
@@ -206,11 +215,6 @@ try:
         fastest_caster.cast_spell(slowest_caster)
         if slowest_caster.health > 0:
             slowest_caster.cast_spell(fastest_caster)
-
-        fastest_caster.active_spell = spell_object_none
-        fastest_caster.active_spell_levenshtein_distance = 0
-        slowest_caster.active_spell = spell_object_none
-        slowest_caster.active_spell_levenshtein_distance = 0
 
 except KeyboardInterrupt:
     print()

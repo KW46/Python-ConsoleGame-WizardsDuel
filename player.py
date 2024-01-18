@@ -1,3 +1,4 @@
+import random
 from wands import Wand
 from spells import SPELL_TYPE_NONE, SPELL_TYPE_USELESS, SPELL_TYPE_DEFENSE, SPELL_TYPE_UNFORGIVABLE#, SPELL_TYPE_COMMON, SPELL_TYPE_POWERFUL
 from spells import Spell, spells, _INVALID_SPELL
@@ -39,6 +40,8 @@ class Player:
             self.stunned_rounds = MAX_STUNNED_ROUNDS
 
     def get_spell_succes_rate(self, spell: Spell):
+        if spell == None:
+            return 0
         return 1 * self.wand.succes_rate * spell.succes_rate
     
     def get_queued_effects(self):
@@ -58,7 +61,7 @@ class Player:
 
     def cast_spell_result(self, spell: Spell, succes: bool):
         if spell == None:
-            spell[None].type = SPELL_TYPE_NONE
+            return "<!> {name} can't cast anything but Finite Incantatem since they are stunned".format(name=self.name)
 
         if succes:
             message = "{name} casted '{spell}' with succes"
@@ -68,8 +71,6 @@ class Player:
             elif spell.type == SPELL_TYPE_NONE:
                 if spell == spells[_INVALID_SPELL]:
                     return "{name} must not be feeling well, since they casted a non existing spell. Cast FAILED!".format(name=self.name)
-                elif spell == None:
-                    return "<!> {name} can't cast anything but {spell} since they are stunned".format(name=self.name, spell=spells["Finite Incantatem"].name)
             else: message = "{name} tried to cast '{spell}' but mispronounced it. Cast FAILED!"
         return message.format(name=self.name, spell=spell.get_spell_name())
     

@@ -49,7 +49,7 @@ class Wand:
 ##
 ## Wands
 ##
-wand = {
+wands = {
     1:  Wand(WAND_CORE_UNICORN, WAND_WOOD_ASH),
     2:  Wand(WAND_CORE_UNICORN, WAND_WOOD_ELDER),
     3:  Wand(WAND_CORE_UNICORN, WAND_WOOD_APPLE),

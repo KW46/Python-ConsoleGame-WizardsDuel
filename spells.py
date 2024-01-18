@@ -13,7 +13,7 @@ CHANCE_HEAL_FULLY       = 5
 
 #Maximum Levenshtein distance. Eg if a user casts 'Pritrgo' instead of 'Protego', distance would be 2 and Protego would still be cast if MAX_LEVENSHTEIN_DISTANCE is at least 2
 #Set to 0 to disable
-MAX_LEVENSHTEIN_DISTANCE = 3
+MAX_LEVENSHTEIN_DISTANCE = 0
 
 if MAX_LEVENSHTEIN_DISTANCE > 0:
     from Levenshtein import distance
@@ -98,17 +98,19 @@ spells = {
 ## Standalone spell functions
 ##
 def random_combat_spell():
-    return random.choice([i for i in spell.items() if i[1].type == SPELL_TYPE_COMMON]) # note: returns tuple ('spell_name', spell_obj)
+    return random.choice([i for i in spells.items() if i[1].type == SPELL_TYPE_COMMON]) # note: returns tuple ('spell_name', spell_obj)
 
 def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spell_name', spell_object), levenshtein_distance )
-    ret = (input, spell.get(input.title(), spell[_INVALID_SPELL]))
+    ret = (input, spells.get(input.title(), spells[_INVALID_SPELL]))
     dist = 0
-    if ret[1] == spell[_INVALID_SPELL] and MAX_LEVENSHTEIN_DISTANCE > 0:
-        for i in spell.items():
-            dist = distance(i[0].title(), input.title())
-            if dist <= MAX_LEVENSHTEIN_DISTANCE:
-                ret = i
-                break
+    if ret[1] == spells[_INVALID_SPELL]:
+        ret = (_INVALID_SPELL, ret[1])
+        if MAX_LEVENSHTEIN_DISTANCE > 0:
+            for i in spells.items():
+                dist = distance(i[0].title(), input.title())
+                if dist <= MAX_LEVENSHTEIN_DISTANCE:
+                    ret[1] = i
+                    break
     return (ret, dist)
 
 def print_spells():
@@ -118,7 +120,7 @@ def print_spells():
     header_spells_powerful = "== POWERFUL COMBAT SPELLS =="
     header_spells_unforgivable = "== UNFORGIVABLE CURSES =="
 
-    for i in spell.items():
+    for i in spells.items():
         if i[1].type == SPELL_TYPE_UNFORGIVABLE or i[1].type == SPELL_TYPE_USELESS or i[1].type == SPELL_TYPE_NONE:
             continue
         
