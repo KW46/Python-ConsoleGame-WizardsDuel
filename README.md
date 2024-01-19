@@ -3,4 +3,4 @@ Based the on Harry Potter franchise.
 
 
 You can run the game via pipenv. If you don't, make sure package levenshtein is installed.<br>
-Run `game.py` to run the game
+Run `entry.py` to run the game
