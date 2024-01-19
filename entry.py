@@ -2,13 +2,12 @@ from game import intro_message_welcome, intro_get_username, intro_print_wands, i
 from game import round_get_player_spells, round_set_player_spells_succes, round_get_player_spells_speed, round_cast_spells, start_round
 from player import Player
 
-current_round = 0
+current_round: int = 0
 
 intro_message_welcome()
 
 player1 = Player(None, None)
 player2 = Player(None, None)
-
 player1.name = intro_get_username(1)
 player2.name = intro_get_username(2)
 

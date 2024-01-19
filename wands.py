@@ -7,13 +7,13 @@ WAND_WOOD_ELDER     = 1 #Speed  -4%
 WAND_WOOD_APPLE     = 2 #Damage -5%
 
 class Wand:
-    def __init__(self, wand_core: int, wand_wood: int):
-        self.core = wand_core
-        self.wood = wand_wood
+    def __init__(self, wand_core: int, wand_wood: int) -> None:
+        self.core: int          = wand_core
+        self.wood: int          = wand_wood
 
-        self.succes_rate = 1
-        self.speed = 1
-        self.damage = 1
+        self.succes_rate: float = 1
+        self.speed: float       = 1
+        self.damage: float      = 1
 
         if self.core == WAND_CORE_UNICORN:
             self.succes_rate *= 1.03
@@ -29,18 +29,18 @@ class Wand:
         elif self.wood == WAND_WOOD_APPLE:
             self.damage *= 0.95
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return"\t{wood} wand with core: {core}\n\t\t-- SPEED: {info_speed}\tDAMAGE: {info_dmg}\tSUCCES RATE: {info_srate}".format(
             wood=self.get_wand_wood(), core=self.get_wand_core(), info_srate=round(self.succes_rate, 2), info_speed=self.speed, info_dmg=round(self.damage, 2)
         )
     
-    def get_wand_core(self):
+    def get_wand_core(self) -> str:
         if self.core == WAND_CORE_UNICORN: return "Unicorn hair"
         elif self.core == WAND_CORE_PHOENIX: return "Phoenix feather"
         elif self.core == WAND_CORE_DRAGON: return "Dragon heartstring"
         else: return "Muggle's electric wire"
     
-    def get_wand_wood(self):
+    def get_wand_wood(self) -> str:
         if self.wood == WAND_WOOD_ASH: return "Ash"
         elif self.wood == WAND_WOOD_ELDER: return "Elder"
         elif self.wood == WAND_WOOD_APPLE: return "Apple"

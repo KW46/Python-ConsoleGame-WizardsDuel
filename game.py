@@ -1,7 +1,7 @@
 import random
 from player import Player
 from wands import wands
-from spells import spells, random_combat_spell, print_spells, find_spell_by_name
+from spells import Spell, spells, random_combat_spell, print_spells, find_spell_by_name
 from spells import _INVALID_SPELL, SPELL_TYPE_COMMON, SPELL_TYPE_POWERFUL
 from game_config import MIN_USERNAME_LEN, MAX_PLAYER_HEALTH
 
@@ -17,7 +17,7 @@ INPUT_MESSAGES = (
 ##
 ## Intro functions
 ##
-def intro_message_welcome():
+def intro_message_welcome() -> None:
     print()
     print("Welcome! You're about to perform a wizard duel!")
     print("After joining in, you have to select a wand. Your wand will affect the power of your spells. Spells have three atrributes that modify the power of spells:")
@@ -26,14 +26,14 @@ def intro_message_welcome():
     print("3- SPEED: If both players succesfully cast a spell, the spell with the greatest speed will succeed and the other one will not")
     print()
 
-def intro_message_duel_start():
+def intro_message_duel_start() -> None:
     print("<!> If you need a list of available spells, enter: help (this will not take away a move)")
     print("<!> If you need information of a specific spell, enter: help SPELL_NAME")
     print("<!> You can press enter (without typing a spell) to cast a random basic combat spell")
     print()
     print("Alright! Time to duel!")
 
-def intro_get_username(playerid: int):
+def intro_get_username(playerid: int) -> str:
     while True:
         user_input = input("Player {id} - What's your name? ".format(id=playerid))
 
@@ -43,11 +43,11 @@ def intro_get_username(playerid: int):
     
     return user_input
 
-def intro_print_wands():
+def intro_print_wands() -> None:
     for i in wands.items():
         print("{wand_id}:{wand_desc}".format(wand_id=i[0], wand_desc=i[1]))
 
-def intro_get_wand(player: Player):
+def intro_get_wand(player: Player) -> Spell:
     while (True):
         try:
             user_input = int(input("What wand do you want {name}? (Enter one of the numbers): ".format(name=player.name)))
@@ -62,7 +62,7 @@ def intro_get_wand(player: Player):
 ##
 ## Game round functions
 ##
-def start_round(round: int, player1: Player, player2: Player):
+def start_round(round: int, player1: Player, player2: Player) -> None:
     if (player1.stunned_rounds > 0): player1.stunned_rounds -= 1
     if (player2.stunned_rounds > 0): player2.stunned_rounds -= 1    
 
@@ -77,10 +77,10 @@ def start_round(round: int, player1: Player, player2: Player):
           )
     )
 
-def print_turn_message(player: Player):
+def print_turn_message(player: Player) -> None:
     return random.choice(INPUT_MESSAGES).format(name=player.name)
 
-def get_player_spell_from_input(player: Player):
+def get_player_spell_from_input(player: Player) -> tuple:
     while True:
         player_input = input(print_turn_message(player))
 
@@ -100,7 +100,7 @@ def get_player_spell_from_input(player: Player):
         else:
             return find_spell_by_name(player_input)
         
-def round_get_player_spells(player1: Player, player2: Player):
+def round_get_player_spells(player1: Player, player2: Player) -> None:
     spell, dist = get_player_spell_from_input(player1)
     player1.active_spell = spells.get(spell[0])
     player1.active_spell_levenshtein_distance = dist
@@ -114,7 +114,7 @@ def round_get_player_spells(player1: Player, player2: Player):
     if (player2.stunned_rounds > 0 and player2.active_spell is not spells["Finite Incantatem"]):
         player2.active_spell = None    
 
-def round_set_player_spells_succes(player1: Player, player2: Player):
+def round_set_player_spells_succes(player1: Player, player2: Player) -> None:
     player1.active_spell_succes = player1.get_spell_succes_rate(player1.active_spell) > random.random() * 100
     player2.active_spell_succes = player2.get_spell_succes_rate(player2.active_spell) > random.random() * 100
     print(player1.cast_spell_result(player1.active_spell, player1.active_spell_succes))
@@ -134,7 +134,7 @@ def round_set_player_spells_succes(player1: Player, player2: Player):
         player2.give_health(MAX_PLAYER_HEALTH)
         print("<!> {name} casted {spell} outstanding! {name} now has full health!".format(name=player2.name, spell=player2.active_spell.get_spell_name(), hp=MAX_PLAYER_HEALTH*0.05))            
 
-def round_get_player_spells_speed(player1: Player, player2: Player):
+def round_get_player_spells_speed(player1: Player, player2: Player) -> tuple:
     player1.active_spell_speed = player1.active_spell.speed * player1.wand.speed
     player2.active_spell_speed = player2.active_spell.speed * player2.wand.speed
 
@@ -166,7 +166,7 @@ def round_get_player_spells_speed(player1: Player, player2: Player):
 
     return (fastest_caster, slowest_caster)
 
-def round_cast_spells(player1: Player, player2: Player):
+def round_cast_spells(player1: Player, player2: Player) -> None:
     player1.cast_spell(player2)
     if player2.health > 0:
         player2.cast_spell(player1)
