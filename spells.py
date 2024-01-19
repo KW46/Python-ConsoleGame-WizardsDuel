@@ -31,23 +31,23 @@ class Spell:
                             - SPELL_TYPE_POWER: Powerful combat spell - deals alot of damage or takes away a few moves from opponent
                             - SPELL_TYPE_UNFORGIVABLE: deals alot of damage or takes away alot of moves from opponent
     """
-    def __init__(self, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON):
-        self.speed = speed
-        self.damage = damage
-        self.succes_rate = succes_rate
-        self.description = description
-        self.type = type
+    def __init__(self, speed: int, damage: int, succes_rate: int, description: str, type: int = SPELL_TYPE_COMMON) -> None:
+        self.speed: int         = speed
+        self.damage: int        = damage
+        self.succes_rate: int   = succes_rate
+        self.description: str   = description
+        self.type: int           = type
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "\n\t{desc}\n\tSUCCES RATE: {srate}%\tSPEED: {speed}\tDAMAGE: {dmg}".format(type=type, desc=self.description, srate=self.succes_rate, speed=self.speed, dmg=self.damage)
     
-    def chance_heal_partly_succes(self):
+    def chance_heal_partly_succes(self) -> bool:
         return self.type == SPELL_TYPE_DEFENSE and CHANCE_HEAL_PARTLY > random.random() * 100
     
-    def chance_heal_fully_succes(self):
+    def chance_heal_fully_succes(self) -> bool:
         return self.type == SPELL_TYPE_DEFENSE and CHANCE_HEAL_FULLY > random.random() * 100
     
-    def get_spell_name(self):
+    def get_spell_name(self) -> str:
         return str(list(i for i in spells if spells[i] == self)).strip("[]'")
     
 ##
@@ -95,10 +95,10 @@ if DEBUG_MODE:
 ##
 ## Standalone spell functions
 ##
-def random_combat_spell():
+def random_combat_spell() -> tuple:
     return random.choice([i for i in spells.items() if i[1].type == SPELL_TYPE_COMMON]) # note: returns tuple ('spell_name', spell_obj)
 
-def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spell_name', spell_object), levenshtein_distance )
+def find_spell_by_name(input: str) -> tuple: # Returns a multidimensional tuple: ( ('spell_name', spell_object), levenshtein_distance )
     ret = (input, spells.get(input.title(), spells[_INVALID_SPELL]))
     dist = 0
     if ret[1] == spells[_INVALID_SPELL]:
@@ -111,7 +111,7 @@ def find_spell_by_name(input: str): # Returns a multidimensional tuple: ( ('spel
                     break
     return (ret, dist)
 
-def print_spells():
+def print_spells() -> None:
     header_spells_useless = "== USELESS SPELLS =="
     header_spells_defensive = "== DEFENSIVE SPELLS =="
     header_spells_common = "== COMMON COMBAT SPELLS =="

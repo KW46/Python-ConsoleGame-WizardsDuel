@@ -5,44 +5,44 @@ from spells import Spell, spells, _INVALID_SPELL
 from game_config import MAX_PLAYER_HEALTH, MAX_STUNNED_ROUNDS
 
 class Player:
-    def __init__(self, name: str, wand: Wand):
-        self.name = name
-        self.health = MAX_PLAYER_HEALTH
-        self.wand = wand
+    def __init__(self, name: str, wand: Wand) -> None:
+        self.name: str                              = name
+        self.health: float                          = MAX_PLAYER_HEALTH
+        self.wand: Wand                             = wand
 
-        self.active_spell = spells[_INVALID_SPELL]
-        self.active_spell_succes = False
-        self.active_spell_levenshtein_distance = 0 # Penalty => If >0 then damage reduction, 15 per distance
+        self.active_spell: Spell                    = spells[_INVALID_SPELL]
+        self.active_spell_succes: bool              = False
+        self.active_spell_levenshtein_distance: int = 0 # Penalty => If >0 then damage reduction, 15 per distance
 
-        self.stunned_rounds = 0
-        self.decreased_spell_speed = False
-        self.decreased_spell_damage = False
+        self.stunned_rounds: int                    = 0
+        self.decreased_spell_speed: bool            = False
+        self.decreased_spell_damage: bool           = False
 
-        self.lumos = False
+        self.lumos: bool                            = False
 
-    def give_health(self, health: int):
+    def give_health(self, health: int) -> float:
         self.health += health
         if self.health > MAX_PLAYER_HEALTH:
             self.health = MAX_PLAYER_HEALTH
         return self.health
 
-    def take_health(self, health: int):
+    def take_health(self, health: int) -> float:
         self.health -= health
         if self.health < 0:
             self.health = 0
         return self.health
     
-    def add_stunned_rounds(self, rounds: int):
+    def add_stunned_rounds(self, rounds: int) -> None:
         self.stunned_rounds += rounds + 1
         if (self.stunned_rounds > MAX_STUNNED_ROUNDS + 1):
             self.stunned_rounds = MAX_STUNNED_ROUNDS
 
-    def get_spell_succes_rate(self, spell: Spell):
+    def get_spell_succes_rate(self, spell: Spell) -> float:
         if spell == None:
             return 0
         return 1 * self.wand.succes_rate * spell.succes_rate
     
-    def get_queued_effects(self):
+    def get_queued_effects(self) -> str:
         output = ""
         effect_slowed = "Slowed"
         effect_blinded = "Blinded"
@@ -57,7 +57,7 @@ class Player:
         if not output: output = "None"
         return output
 
-    def cast_spell_result(self, spell: Spell, succes: bool):
+    def cast_spell_result(self, spell: Spell, succes: bool) -> str:
         if spell == None:
             return "<!> {name} can't cast anything but Finite Incantatem since they are stunned".format(name=self.name)
 
@@ -72,7 +72,7 @@ class Player:
             else: message = "{name} tried to cast '{spell}' but mispronounced it. Cast FAILED!"
         return message.format(name=self.name, spell=spell.get_spell_name())
     
-    def cast_spell(self, opponent): #: Player ?
+    def cast_spell(self, opponent) -> None:
         spell_name = self.active_spell.get_spell_name()
 
         if self.active_spell is None:
