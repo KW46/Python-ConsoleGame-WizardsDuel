@@ -44,6 +44,7 @@ try:
             player1.cast_spell(player2)
             continue    
         
+        print()
         fastest_caster, slowest_caster = round_get_player_spells_speed(player1, player2)
         round_cast_spells(fastest_caster, slowest_caster)
 
